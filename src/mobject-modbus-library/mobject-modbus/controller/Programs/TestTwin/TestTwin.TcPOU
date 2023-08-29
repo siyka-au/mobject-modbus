@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="TestTwin" Id="{560363cb-337e-4204-b176-aa17769a2df9}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'linkalways'} 
+{attribute 'no_explicit_call' := 'This FB is a CLASS and must be accessed using methods or properties'}
+{attribute 'enable_dynamic_creation'}
+FUNCTION_BLOCK TestTwin EXTENDS BasicModbusDigitalTwin
+VAR
+	configData : TestSlaveConfigData;
+	fastDataA : TestSlaveFastDataA;
+	fastDataB : TestSlaveFastDataB;
+	
+	timeout : TIME := T#200MS;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Properties" Id="{1d00b0d0-d8f9-49c6-8596-4ed75dbf6670}" />
+    <Property Name="Config1" Id="{3d612441-b9a2-43d9-96ab-a8fd0b5862a5}" FolderPath="Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY PUBLIC Config1 : INT
+]]></Declaration>
+      <Get Name="Get" Id="{0411bcfc-d280-4a2f-b31b-3e12a94eb2b4}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Config1 := configData.config1;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{041da7b9-b29a-4753-9b76-510e5dafc800}">
+        <Declaration><![CDATA[PUBLIC]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[QueueWriteSingleRegister(0, INT_TO_WORD(Config1), timeout);]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Config2" Id="{427d1ae4-a56f-444d-92a2-9813240e331e}" FolderPath="Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY PUBLIC Config2 : INT
+]]></Declaration>
+      <Get Name="Get" Id="{f7ec2980-ac93-4f9d-a0ea-6fc8775d07e5}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Config2 := configData.config2;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{320c12a2-e007-44b0-9422-eb7dfa155d72}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[QueueWriteSingleRegister(1, INT_TO_WORD(Config2), timeout);]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Data1" Id="{4cd4f67a-5e98-4718-974c-248691edd2f5}" FolderPath="Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY PUBLIC Data1 : INT
+]]></Declaration>
+      <Get Name="Get" Id="{b6183a83-5567-4b06-8958-fd524c598ac8}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Data1 := fastDataA.fastData1;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{0a3d8920-7061-4b48-8f61-389c2d4761b4}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[QueueWriteSingleRegister(2, INT_TO_WORD(Data1), timeout);]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Data2" Id="{c500f905-27f7-4e2d-aea3-555279887e74}" FolderPath="Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY PUBLIC Data2 : INT
+]]></Declaration>
+      <Get Name="Get" Id="{0e17e688-dd3d-4202-995f-9468f5199a1e}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Data2 := fastDataA.fastData2;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{906ef892-3ff3-408e-b0f3-260f11b7e4f6}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[QueueWriteSingleRegister(3, INT_TO_WORD(Data2), timeout);]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Data3" Id="{cedcc904-47d2-46b2-918a-aebd2b843aed}" FolderPath="Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY PUBLIC Data3 : INT
+]]></Declaration>
+      <Get Name="Get" Id="{c5b83bdc-60ef-4415-9c7a-508e6d9287e1}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Data3 := fastDataB.fastData3;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{c2303dfc-0f01-4fe8-bc18-95f4c93ea39d}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[QueueWriteSingleRegister(4, INT_TO_WORD(Data3), timeout);]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Data4" Id="{ac7da84c-02b5-4f40-99ee-568bf6e6b1d6}" FolderPath="Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY PUBLIC Data4 : INT
+]]></Declaration>
+      <Get Name="Get" Id="{7b50e30b-ff4a-435d-9ec4-a3d9fb51e2e9}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Data4 := fastDataB.fastData4;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{ad906674-c446-4c51-ba85-40e32e0f146d}">
+        <Declaration><![CDATA[PUBLIC
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[QueueWriteSingleRegister(5, INT_TO_WORD(Data4), timeout);]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="FB_init" Id="{91f685b6-9577-43b7-961f-9ebd7adaf0da}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	ipAddress : STRING(15);
+	tcpPort : UINT := MODBUS_TCP_PORT;
+	unitId : USINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AddCyclicalReadRegisters(0, 2, ADR(configData), SIZEOF(configData), timeout);
+AddCyclicalReadRegisters(2, 2, ADR(fastDataA), SIZEOF(fastDataA), timeout);
+AddCyclicalReadRegisters(4, 2, ADR(fastDataB), SIZEOF(fastDataB), timeout);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

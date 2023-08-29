@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="WriteSingleRegisterCommand" Id="{5c720fec-5140-4075-96a0-364613ede940}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'linkalways'} 
+{attribute 'no_explicit_call' := 'This FB is a CLASS and must be accessed using methods or properties'}
+{attribute 'enable_dynamic_creation'}
+FUNCTION_BLOCK WriteSingleRegisterCommand EXTENDS ModbusCommand
+VAR
+	fb : FB_MBWriteSingleReg;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{79250e50-5cb1-4d96-8896-f9ed77eda141}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	ipAddress : STRING(15);
+	tcpPort : UINT := MODBUS_TCP_PORT;
+	unitId : USINT;
+	modbusAddress : UINT;
+	data : WORD;
+	timeout : TIME;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fb.sIPAddr := ipAddress;
+fb.nTCPPort := tcpPort;
+fb.nUnitID := USINT_TO_BYTE(unitId);
+fb.nMBAddr := UINT_TO_WORD(modbusAddress);
+fb.nValue := data;
+fb.tTimeout := timeout;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnAborting" Id="{7d28c6fb-1908-41f8-9e54-d0727769b95c}">
+      <Declaration><![CDATA[METHOD PROTECTED OnAborting
+VAR_INPUT
+	StateControl : I_AsyncCommandStateControl;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fb(bExecute := FALSE);
+StateControl.Next();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnCompleting" Id="{d2fe8f14-3e24-46a7-a785-a05b78c4f0c7}">
+      <Declaration><![CDATA[METHOD PROTECTED OnCompleting
+VAR_INPUT
+	StateControl : I_AsyncCommandStateControl;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fb(bExecute := FALSE);
+StateControl.Next();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnExecuting" Id="{7a9371db-9281-47ec-86c3-3a509086d110}">
+      <Declaration><![CDATA[METHOD PROTECTED OnExecuting
+VAR_INPUT
+	StateControl : I_AsyncCommandStateControl;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fb(bExecute := TRUE);
+
+IF NOT fb.bBusy THEN
+	IF fb.bError THEN
+		StateControl.Error(fb.nErrId);
+	ELSE
+		StateControl.Next();
+	END_IF
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnIdle" Id="{515df99e-89e2-4fab-9f89-ba6795801356}">
+      <Declaration><![CDATA[METHOD PROTECTED OnIdle
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fb(bExecute := FALSE);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnInitializing" Id="{88cf1b96-822a-4a39-9f6b-1fdaca740602}">
+      <Declaration><![CDATA[METHOD PROTECTED OnInitializing
+VAR_INPUT
+	StateControl : I_AsyncCommandStateControl;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fb(bExecute := TRUE);
+StateControl.Next();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

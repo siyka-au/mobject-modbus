@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TestSlaveConfigData" Id="{cdc02899-ce84-4fa4-8056-f91342d074e8}">
+    <Declaration><![CDATA[TYPE TestSlaveConfigData :
+STRUCT
+	config1 : INT;
+	config2 : INT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <FileVersion>1.0.0.0</FileVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9c143738-a043-4a94-beb1-300f85079d91}</ProjectGuid>
+    <SubObjectsSortedByName>True</SubObjectsSortedByName>
+    <DownloadApplicationInfo>true</DownloadApplicationInfo>
+    <WriteProductVersion>true</WriteProductVersion>
+    <GenerateTpy>false</GenerateTpy>
+    <Name>controller</Name>
+    <ProgramVersion>3.1.4024.0</ProgramVersion>
+    <Application>{961b284d-aebc-4b0c-9b83-134fb1cc840b}</Application>
+    <TypeSystem>{7bd694b7-e251-4afd-8ee0-6f9ec3b9e779}</TypeSystem>
+    <Implicit_Task_Info>{08a5e484-d64b-4e2a-990d-3a5ea985b5ff}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{5e323427-ee09-44d5-aa9f-f1013486221a}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{cd2d3f5a-3793-45b9-92b4-4a4bc5335e7f}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{e4f78841-37ae-4edd-9dc0-90674b8fbeae}</LibraryReferences>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Lib" />
+    <Folder Include="Lib\Modbus" />
+    <Folder Include="Lib\ModbusTwin" />
+    <Folder Include="Programs" />
+    <Folder Include="Programs\TestTwin" />
+    <Folder Include="_Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Lib\ModbusTwin\BasicModbusDigitalTwin.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lib\Modbus\ModbusCommand.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lib\Modbus\ReadRegistersCommand.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lib\Modbus\WriteSingleRegisterCommand.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Programs\Main.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Programs\TestTwin\TestTwin.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Programs\TestTwin\TestSlaveConfigData.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Programs\TestTwin\TestSlaveFastDataA.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Programs\TestTwin\TestSlaveFastDataB.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="_Tasks\PlcTask.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderReference Include="mobject-collections">
+      <DefaultResolution>mobject-collections, * (mobject)</DefaultResolution>
+      <Namespace>mobject_collections</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="mobject-commands">
+      <DefaultResolution>mobject-commands, * (mobject)</DefaultResolution>
+      <Namespace>mobject_commands</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="mobject-disposable">
+      <DefaultResolution>mobject-disposable, * (mobject)</DefaultResolution>
+    </PlaceholderReference>
+    <PlaceholderReference Include="mobject-enumerable">
+      <DefaultResolution>mobject-enumerable, * (mobject)</DefaultResolution>
+      <Namespace>mobject_enumerable</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_ModbusSrv">
+      <DefaultResolution>Tc2_ModbusSrv, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_ModbusSrv</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_Module">
+      <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc3_Module</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_System">
+      <DefaultResolution>Tc3_System, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc3_System</Namespace>
+    </PlaceholderReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="controller.tmc">
+      <SubType>Content</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderResolution Include="mobject-disposable">
+      <Resolution>mobject-disposable, * (mobject)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="mobject-enumerable">
+      <Resolution>mobject-enumerable, * (mobject)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc2_ModbusSrv">
+      <Resolution>Tc2_ModbusSrv, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc2_Standard">
+      <Resolution>Tc2_Standard, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc2_System">
+      <Resolution>Tc2_System, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc3_Module">
+      <Resolution>Tc3_Module, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc3_System">
+      <Resolution>Tc3_System, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+  </ItemGroup>
+  <ProjectExtensions>
+    <PlcProjectOptions>
+      <XmlArchive>
+        <Data>
+          <o xml:space="preserve" t="OptionKey">
+      <v n="Name">"&lt;ProjectRoot&gt;"</v>
+      <d n="SubKeys" t="Hashtable" />
+      <d n="Values" t="Hashtable" />
+    </o>
+        </Data>
+        <TypeList>
+          <Type n="Hashtable">System.Collections.Hashtable</Type>
+          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
+    </PlcProjectOptions>
+  </ProjectExtensions>
+</Project>

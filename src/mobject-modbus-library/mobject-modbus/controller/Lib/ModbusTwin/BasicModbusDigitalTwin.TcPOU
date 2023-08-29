@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="BasicModbusDigitalTwin" Id="{b6e5046c-ae03-4b26-8f06-d5b13621156b}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'linkalways'} 
+{attribute 'no_explicit_call' := 'This FB is a CLASS and must be accessed using methods or properties'}
+{attribute 'enable_dynamic_creation'}
+FUNCTION_BLOCK ABSTRACT BasicModbusDigitalTwin
+VAR
+	ipAddress : STRING(15);
+	tcpPort : UINT := MODBUS_TCP_PORT;
+	unitId : USINT;	
+
+	cyclicCommands : LinkedList;
+	queuedCommands : Queue;
+	
+	commandRunner : SingleAsyncCommandRunner;
+	currentCommand : I_AsyncCommand;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Constructor" Id="{6b55e434-d5db-4c12-ac4d-013958d25c41}" />
+    <Folder Name="Private" Id="{0e9f2ce1-8085-452b-ae64-abdee306f1ff}" />
+    <Folder Name="Protected" Id="{6df3e40e-eb98-47b7-9da1-e79023ddcbec}" />
+    <Method Name="AddCyclicalCommand" Id="{372918e3-20a4-4f39-8405-9aab5a73fec3}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE AddCyclicalCommand
+VAR_INPUT
+	command : I_AsyncCommand;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[cyclicCommands.AddItem(command);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AddCyclicalReadRegisters" Id="{6d6a3e35-25f3-49e9-b7b0-0de909a5e797}" FolderPath="Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED AddCyclicalReadRegisters
+VAR_INPUT
+	modbusAddress : UINT;
+	quantity : UINT (1..128);	
+	destinationAddress : POINTER TO BYTE;
+	destinationLength : UDINT;
+	timeout : TIME;
+END_VAR
+VAR
+	_modbusAddress : UINT;
+	_quantity : UINT (1..128);	
+	_destinationAddress : POINTER TO BYTE;
+	_destinationLength : UDINT;
+	_timeout : TIME;
+	pCommand : POINTER TO ReadRegistersCommand;
+	command : I_AsyncCommand;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_modbusAddress := modbusAddress;
+_quantity := quantity;
+_destinationAddress := destinationAddress;
+_destinationLength := destinationLength;
+_timeout := timeout;
+
+pCommand := __NEW(ReadRegistersCommand(
+	ipAddress := THIS^.ipAddress, tcpPort := THIS^.tcpPort, unitId := THIS^.unitId,
+	modbusAddress := _modbusAddress, quantity := _quantity,
+	destinationAddress := _destinationAddress, destinationLength := _destinationLength,
+	timeout := _timeout));
+command := pCommand^;
+AddCyclicalCommand(command);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CyclicCall" Id="{c1282a51-2d53-46c1-8e6d-f4cba2dccf38}">
+      <Declaration><![CDATA[METHOD PUBLIC CyclicCall
+VAR_INST
+	cyclicEnumerator : I_ForwardEnumerator;
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF cyclicEnumerator = 0 THEN
+	cyclicEnumerator := cyclicCommands.GetEnumerator();
+END_IF
+
+IF NOT commandRunner.Busy THEN
+	IF queuedCommands.Count > 0 THEN
+		IF queuedCommands.TryDequeue(currentCommand) THEN
+			commandRunner.ExecuteCommand(currentCommand);
+		END_IF		
+	ELSE
+		IF cyclicEnumerator.MoveNext() AND_THEN cyclicEnumerator.TryGet(currentCommand) THEN
+			commandRunner.ExecuteCommand(currentCommand);
+		ELSE
+			cyclicEnumerator.Dispose();
+			cyclicEnumerator := 0;
+		END_IF
+	END_IF
+END_IF
+
+commandRunner.CyclicCall();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{4ce22b96-6fe7-4e11-a51e-67e1480afa7b}" FolderPath="Constructor\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	ipAddress : STRING(15);
+	tcpPort : UINT := MODBUS_TCP_PORT;
+	unitId : USINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.ipAddress := ipAddress;
+THIS^.tcpPort := tcpPort;
+THIS^.unitId := unitId;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="QueueCommand" Id="{f86678b3-aaef-43ac-a109-2125f4fc25d0}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE QueueCommand
+VAR_INPUT
+	command : I_AsyncCommand;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[queuedCommands.Enqueue(command);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="QueueWriteSingleCoil" Id="{f9499c9f-9373-4668-83c2-e7ee62755b5d}" FolderPath="Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED QueueWriteSingleCoil
+VAR_INPUT
+	modbusAddress : WORD;
+	value : BOOL;
+	timeout : TIME;
+END_VAR
+VAR
+	pCommand : POINTER TO WriteSingleRegisterCommand;
+	command : I_AsyncCommand;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="QueueWriteSingleRegister" Id="{7057d1a8-18b5-4240-9042-4d6dd9959ae1}" FolderPath="Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED QueueWriteSingleRegister
+VAR_INPUT
+	modbusAddress : UINT;
+	data : WORD;
+	timeout : TIME;
+END_VAR
+VAR
+	_modbusAddress : UINT;
+	_data : WORD;
+	_timeout : TIME;
+	pCommand : POINTER TO WriteSingleRegisterCommand;
+	command : I_AsyncCommand;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_modbusAddress := modbusAddress;
+_data := data;
+_timeout := timeout;
+
+pCommand := __NEW(WriteSingleRegisterCommand(
+	ipAddress := THIS^.ipAddress, tcpPort := THIS^.tcpPort, unitId := THIS^.unitId,
+	modbusAddress := _modbusAddress, data := _data,
+	timeout := _timeout));
+command := pCommand^;
+QueueCommand(command);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
